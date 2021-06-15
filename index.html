@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body{
+color:white;
+position:static !important;
+margin: 0;
+padding: 0;
+overflow:hidden;
+background-color: #36393F;
+}
+#header {
+position: fixed;
+width: 100%;
+color:white;d
+z-index: 100;
+height: 50px;
+font-size: 40px;
+}
+#container{
+z-index: -100;
+}
+canvas{
+z-index: -100;
+}
+</style>
+</head>
+<body>
+<div id="header" style="background-color:#2F3136;">
+<table style="width: 100%; height: 90%; text-align: center;">
+<tr>
+<td><input style="color:black" type="text" id="myInput" placeholder="Insert IGN.." ></td>
+<td><div id="countdown"></div></td>
+<td> <input type="file" id="myFile" name="filename"></td>
+</tr>
+</table>
+</div>
+<div id="container" style="position: fixed;" ondrop="txt(event);" ondragover="dragOverHandler(event);"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/konva@7.0.4/konva.min.js"></script>
+
+<script>
+  var blessers
+function dragOverHandler(ev){ev.preventDefault()}
+window.addEventListener('resize', fitStageIntoParentContainer);
+function fitStageIntoParentContainer() {
+stage.width(window.innerWidth)
+stage.height(window.innerHeight)}
+const fileSelector = document.getElementById('myFile');
+fileSelector.addEventListener('change', (event) => {
+reader = new FileReader();
+reader.onload = function (event) {
+var stage = new Konva.Stage({
+container: 'container',
+width: window.innerWidth,
+height: window.innerHeight,
+});
+stagesetup(stage);
+blessersetup(event.target.result.split("\r\n"))
+stage.add(layer);
+stage.batchDraw()
+};
+reader.readAsText(event.target.files[0])
+
+
+});
+$( document ).ready( function() {
+})
+$("#myInput").on('keyup', function (e) {
+if (e.key === 'Enter' || e.keyCode === 13) {
+  blessers.push($(this).val())
+  localStorage.blessers=blessers
+var blesser = new Konva.Text({
+x: stage.width()/2,
+y: stage.height()/2,
+text: $(this).val(),
+fontSize: 20,
+fill: 'white',
+draggable:true,
+align: 'left',
+width: $(this).val().length*11,
+height:20,
+});
+listener(blesser)}
+});
+
+function ShowTime() {
+var now = new Date();
+var hrs=Math.abs(now.getHours()-43)
+if (hrs>24){
+hrs=hrs-24
+}
+var mins = 60-now.getMinutes();
+var secs = 60-now.getSeconds();
+if (mins.toString().length<2){mins="0"+mins}
+if (secs.toString().length<2){secs="0"+secs}
+console.log(secs.toString().length<2)
+$("#countdown").html("" +hrs+':'+mins+':'+secs);
+}
+setInterval(ShowTime ,1000);
+
+function txt(ev) {
+ev.preventDefault()
+reader = new FileReader();
+reader.onload = function (event) {
+  var stage = new Konva.Stage({
+container: 'container',
+width: window.innerWidth,
+height: window.innerHeight,
+});
+stagesetup(stage);
+
+localStorage.blessers=event.target.result.split("\r\n")
+
+blessersetup(event.target.result.split("\r\n"))
+stage.add(layer);
+
+stage.batchDraw()
+};
+reader.readAsText(ev.dataTransfer.files[0])
+}//txt
+
+function haveIntersection(r1, r2) {
+return !(
+r2.x > r1.x + r1.width ||
+r2.x + r2.width < r1.x ||
+r2.y > r1.y + r1.height ||
+r2.y + r2.height < r1.y
+);
+}
+var layer
+var stage = new Konva.Stage({
+container: 'container',
+width: window.innerWidth,
+height: window.innerHeight,
+});
+stagesetup(stage)
+function stagesetup(){
+  stage.on('wheel', (e) => {
+e.evt.preventDefault();
+var oldScale = stage.scaleX();
+var pointer = stage.getPointerPosition();
+var mousePointTo = {x: (pointer.x - stage.x()) / oldScale,y: (pointer.y - stage.y()) / oldScale,};
+var newScale =e.evt.deltaY > 0 ?  oldScale / 1.1: oldScale * 1.1;
+stage.scale({ x: newScale, y: newScale });
+var newPos = {x: pointer.x - mousePointTo.x * newScale,y: pointer.y - mousePointTo.y * newScale,};
+stage.position(newPos);
+stage.batchDraw();})
+stage.draggable(true);
+layer = new Konva.Layer();
+var relays=['Strata 1','Strata 2','Larunda 1', 'Larunda 2','Kronia 1','Kronia 2']
+for (i = 0; i < relays.length; i++) {
+var group = new Konva.Group({
+draggable: true,
+relay: true,
+});
+var simpleText = new Konva.Text({
+x: stage.width()  *0.05+50,
+y: stage.height()/ (relays.length+1) * (i+1),
+text: relays[i],
+fontSize: 30,
+fill: 'yellow',
+align: 'center',
+width: 200,
+relay: true,
+});
+
+var rect = new Konva.Rect({
+x: stage.width()  *0.05,
+y: stage.height()/ (relays.length+1) * (i+1),
+fill: '#2F3136',
+width: 300,
+height: simpleText.height()*8,
+cornerRadius: 10,
+shadowBlur: 10,
+relay: true,
+});
+group.add(rect)
+group.add(simpleText)
+layer.add(group);
+group.on('mouseover', function () {
+document.body.style.cursor = 'move';
+});
+group.on('mouseout', function () {
+document.body.style.cursor = 'default';
+});
+}
+
+}
+
+
+
+if(typeof(Storage) !== "undefined") {
+    if (!localStorage.blessers) {
+      localStorage.blessers = ['ZacharyLaw','-NG-kunaon','heevil','00Pokemon00','QUBITSKIE'
+,'.SirDevil.','XIIIAEther','Immov','Drakaria','DuckLord_ShowUp-And-Say','Cascavel13'
+,'Castiel3232','--Prime01Jok3r--','GL0ME','Immov','sowf','Axis','LonelyHarp','WreckitRaf'
+,'BingoTough','Sandvich_3228','ProxyDevil']
+    }else{blessers=localStorage.blessers.split(',')}
+  } 
+
+blessersetup(localStorage.blessers.split(','))
+
+function blessersetup(blessers){
+  for (i = 0; i < blessers.length; i++) {
+var blesser = new Konva.Text({
+x: stage.width()/3*2,
+y: (blessers.length+1) * (i+1)*1.5+stage.height()/10,
+text: blessers[i],
+fontSize: 20,
+fill: 'white',
+draggable:true,
+align: 'left',
+width: blessers[i].length*11,
+height:20,
+});
+listener(blesser)
+}
+layer.batchDraw()         
+
+}
+
+
+
+
+stage.add(layer);
+
+
+function listener(blesser){
+blesser.on('dragend', function (e) {
+var target = e.target;
+var targetRect = e.target.getClientRect();
+
+layer.find('Group').forEach(function (group) {
+if (haveIntersection(group.getClientRect(), targetRect)) {
+var counts=group.getChildren().length
+if(counts<8){
+group.add(e.target)
+e.target.x(group.children[1].x())
+e.target.y(group.children[1].y()+30*(counts-1))
+layer.batchDraw()
+}
+stage.batchDraw();
+}});
+});
+blesser.on('dblclick',function(e){
+  blesser.destroy();
+
+  
+
+for( var i = 0; i < blessers.length; i++){ 
+if ( blessers[i] === blesser.attrs.text) {blessers.splice(i, 1)}
+}
+localStorage.blessers=blessers
+
+  layer.batchDraw();
+})
+blesser.on('dragstart', function (e) {
+var target = e.target;
+var gp=target.getParent();
+if (target.getParent().getType()=='Group'){
+target.moveTo(layer)                    
+layer.batchDraw()         
+}
+});
+layer.add(blesser);
+layer.batchDraw()}
+
+
+
+
+</script>
+</body>
+</html>
