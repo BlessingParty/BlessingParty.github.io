@@ -232,7 +232,7 @@ width: window.innerWidth,
 height: window.innerHeight,
 });
 stagesetup(stage);
-localStorage.blessers=event.target.result.split("\r\n")
+localStorage.blessersx=event.target.result.split("\r\n")
 blessersetup(event.target.result.split("\r\n").map(function(e){return e.split("|").map(String)}))
 stage.add(layer);
 
@@ -244,7 +244,7 @@ function blessers2localstorage(){
   
   var string=''
 for(var i=0;i<blessers.length;i++)string+=blessers[i].join('|')+','
-  localStorage.blessers=string.slice(0,-1)
+  localStorage.blessersx=string.slice(0,-1)
 }
 function haveIntersection(r1, r2) {
 return !(
@@ -331,14 +331,14 @@ layer.batchDraw();
 
 
 if(typeof(Storage) !== "undefined") {
-if (!localStorage.blessers) {
-localStorage.blessers = ['ZacharyLaw|Leader|Discord','-NG-kunaon|Leader|Discord','heevil|Leader|Discord','00Pokemon00||','QUBITSKIE||'
+if (!localStorage.blessersx) {
+localStorage.blessersx = ['ZacharyLaw|Leader|Discord','-NG-kunaon|Leader|Discord','heevil|Leader|Discord','00Pokemon00||','QUBITSKIE||'
 ,'.SirDevil.||','XIIIAEther||','Immov||','Drakaria||','DuckLord_ShowUp-And-Say||','Cascavel13||'
 ,'Castiel3232||','--Prime01Jok3r--||','GL0ME||','Immov||','sowf||','Axis||','LonelyHarp||','WreckitRaf||'
 ,'BingoTough||','Sandvich_3228||','ProxyDevil||']
-}else blessers = localStorage.blessers.split(",").map(function(e) {return e.split("|").map(String)})
+}else blessers = localStorage.blessersx.split(",").map(function(e) {return e.split("|").map(String)})
 } 
-blessersetup(localStorage.blessers.split(",").map(function(e) {return e.split("|").map(String)}))
+blessersetup(localStorage.blessersx.split(",").map(function(e) {return e.split("|").map(String)}))
 function blessersetup(blessers){
 $('#render').show()
 for (var i = 0; i <blessers.length; i++) {
